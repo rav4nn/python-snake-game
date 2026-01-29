@@ -22,8 +22,9 @@ score_board = ScoreBoard()
 
 # Set up key bindings for snake movement
 screen.listen()
-screen.onkey(key="Left", fun=snake.left)
-screen.onkey(key="Right", fun=snake.right)
+# Changed to onkeypress for faster input
+screen.onkeypress(key="Left", fun=snake.left)
+screen.onkeypress(key="Right", fun=snake.right)
 
 game_on = True  # Flag to control the game loop
 
@@ -38,7 +39,7 @@ while game_on:
         food.refresh()  # Move the food to a new random location
         snake.extend_segment()  # Extend the snake by adding a new segment
 
-    # Detect collision with the wall
+    # Detect collision with the wall and let snake appear from opposite side
     if snake.head.xcor() > 280:
         snake.head.setpos(-280,snake.head.ycor())
     if snake.head.xcor() < -280:
@@ -47,16 +48,13 @@ while game_on:
         snake.head.setpos(snake.head.xcor(),-280)
     if snake.head.ycor() < -280:
         snake.head.setpos(snake.head.xcor(),280)
-        #game_on = False  # End the game if the snake hits the wall
+
 
     # Detect collision with the snake's tail
     for segment in snake.snake_segments[1:]: #list slicing used
         if snake.head.distance(segment) < 10:
-            game_on = False  # End the game if the snake collides with its tail
-
-score_board.game_over()
-
-# Display the game over message on the scoreboard
+            score_board.reset_score()
+            snake.reset()
 
 
 # Close the window when clicked
